@@ -15,11 +15,14 @@ function onReady() {
 
 let arcaneScepter = {
     AP : 12,
-    HP : 14
+    // HP : 14
+    HP: 90
 }
 let entangle = {
     AP : 23,
-    HP : 9
+    // HP : 9
+    HP : 1
+
 }
 let dragonBlade = {
     AP : 38,
@@ -29,6 +32,7 @@ let starFire = {
     AP : 33,
     HP : 25
 }
+let interval = 0;
 
 function attack(event){
     let attackString = event.data.attack;
@@ -47,18 +51,27 @@ function attack(event){
     if (attackString === 'star'){
         currentAttack = starFire; 
     }
-
-// let fungusHP = 100;
-// let heroAP = 100;
     fungusHP -= currentAttack.HP;
     heroAP   -= currentAttack.AP;
 
-    $('#ap-meter').val(`${heroAP}`);
-    $('#hp-meter').val(`${fungusHP}`);
+    
+    updateState(currentAttack);
+    if (fungusHP === 0){
+        clearInterval(interval);
+        return;
+    } else if (fungusHP < 50){
+        interval = setInterval(function () {
+            fungusHP += 1;
+            updateState();
+            if (fungusHP >= 50){
+                clearInterval(interval);
+                console.log("SHOULD STOP")    
+            }
+        }, 1000);
+    }
+}
 
-
-
-
+function updateState(){
     if (fungusHP <= 0){
         fungusHP = 0;
         $('.freaky-fungus').removeClass('walk');
@@ -68,13 +81,29 @@ function attack(event){
         heroAP = 0;
         $('.freaky-fungus').removeClass('walk');
         $('.freaky-fungus').addClass('jump');
-
+        
         $('.attack-btn').attr("disabled" , "true");
     }
-
+    $('#ap-meter').val(`${heroAP}`);
+    $('#hp-meter').val(`${fungusHP}`);
+    
     $('.ap-text').text(`${heroAP} AP`);
     $('.hp-text').text(`${fungusHP} HP`);
+    
 }
+
+
+
+
+
+
+
+
+//TODO: STOP healing thing from piling recursivly
+
+
+
+
 
 // ✅ listensers for attack buttons
 //      ✅update state
