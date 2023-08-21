@@ -52,16 +52,25 @@ function attack(event){
 // let heroAP = 100;
     fungusHP -= currentAttack.HP;
     heroAP   -= currentAttack.AP;
+
+    $('#ap-meter').val(`${heroAP}`);
+    $('#hp-meter').val(`${fungusHP}`);
+
+
+
+
     if (fungusHP <= 0){
         fungusHP = 0;
+        $('.freaky-fungus').removeClass('walk');
+        $('.freaky-fungus').addClass('dead');
     }
     if (heroAP <= 0){
         heroAP = 0;
+        $('.freaky-fungus').removeClass('walk');
+        $('.freaky-fungus').addClass('jump');
+
+        $('.attack-btn').attr("disabled" , "true");
     }
-
-    
-// If the Freaky Fungus runs out of HP, the monster is dead and you win! Replace the walk class with a dead class on the freaky-fungus element, to make them fall over and die.
-
 
     $('.ap-text').text(`${heroAP} AP`);
     $('.hp-text').text(`${fungusHP} HP`);
@@ -76,10 +85,8 @@ function attack(event){
         // ✅assign attack values
             // ✅HP
             // ✅ AP
-
-
 //✅ HP and AP may not be negative (set to zero, if they would otherwise be negative)
+// ✅ If the Freaky Fungus runs out of HP, the monster is dead and you win! Replace the walk class with a dead class on the freaky-fungus element, to make them fall over and die.
 
-
-// If you run out of AP, the monster wins and humanity is doomed 😢 Replace the walk class with a jump class on the freaky-fungus element, to make them jump for the glory of the fungal race.
-// You may no longer attack, if AP is 0. Give all of the attack buttons a disabled attribute, so they may no longer be used.
+// ✅ If you run out of AP, the monster wins and humanity is doomed 😢 Replace the walk class with a jump class on the freaky-fungus element, to make them jump for the glory of the fungal race.
+// ✅ You may no longer attack, if AP is 0. Give all of the attack buttons a disabled attribute, so they may no longer be used.
