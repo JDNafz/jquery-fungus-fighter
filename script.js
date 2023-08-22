@@ -1,8 +1,5 @@
 $(document).ready(onReady);
 
-// State Variables can be declared outside of the onReady
-// Feel free to make this to what you want!
-// Example:
 let fungusHP = 100;
 let heroAP = 100;
 
@@ -15,14 +12,11 @@ function onReady() {
 
 let arcaneScepter = {
     AP : 12,
-    // HP : 14
-    HP: 90
+    HP : 14
 }
 let entangle = {
     AP : 23,
-    // HP : 9
-    HP : 1
-
+    HP : 9
 }
 let dragonBlade = {
     AP : 38,
@@ -32,61 +26,69 @@ let starFire = {
     AP : 33,
     HP : 25
 }
-let interval = 0;
 
+let interval = 0; //initialize healing variable
 function attack(event){
     let attackString = event.data.attack;
-    let currentAttack = {};
+    let currentAttack = {}; // initialize currentAttack outside of the 'if' blocks.
     if (attackString === 'scepter'){
         currentAttack = arcaneScepter;
     }
     if (attackString=== 'entangle'){
         currentAttack = entangle;
-
     }
     if (attackString=== 'blade'){
         currentAttack = dragonBlade;
-
     }
     if (attackString === 'star'){
         currentAttack = starFire; 
     }
+    //update the state of HP and AP
     fungusHP -= currentAttack.HP;
     heroAP   -= currentAttack.AP;
 
     
-    updateState(currentAttack);
+    renderOnDom(currentAttack);
+    //if the fungus dies, do not let healing property continue.
     if (fungusHP === 0){
         clearInterval(interval);
-        return;
-    } else if (fungusHP < 50){
+
+    // if Freaky STRONG Fungus heals itself if low on health
+    // if interval is already running, do not initialize another instance. 
+    } else if (fungusHP < 50 && !interval){
         interval = setInterval(function () {
-            fungusHP += 1;
-            updateState();
+            fungusHP += 1; //updating state
+            renderOnDom(); //rendering on DOM
             if (fungusHP >= 50){
-                clearInterval(interval);
-                console.log("SHOULD STOP")    
+                //if fungus is over 50hp stop healing.
+                clearInterval(interval);  
             }
-        }, 1000);
+        }, 1000); // 1 second interval.
     }
 }
 
-function updateState(){
+//renders on DOM and updates appropriate CSS classes.
+function renderOnDom(){
     if (fungusHP <= 0){
-        fungusHP = 0;
+        fungusHP = 0;//don't drop below zero.
         $('.freaky-fungus').removeClass('walk');
         $('.freaky-fungus').addClass('dead');
     }
     if (heroAP <= 0){
-        heroAP = 0;
+        heroAP = 0; //don't drop below zero. (update state)
+
+        //render DOM
         $('.freaky-fungus').removeClass('walk');
         $('.freaky-fungus').addClass('jump');
         
-        $('.attack-btn').attr("disabled" , "true");
+        // disable attack buttons if there is no AP left
+        $('.attack-btn').attr("disabled" , "true"); 
     }
+    // update progress meters
     $('#ap-meter').val(`${heroAP}`);
     $('#hp-meter').val(`${fungusHP}`);
     
+    // update text 
     $('.ap-text').text(`${heroAP} AP`);
     $('.hp-text').text(`${fungusHP} HP`);
     
